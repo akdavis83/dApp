@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <link rel="icon" href="https://fav.farm/🔗" />
+
+    <link rel="stylesheet" href="./styles.css" />
+  
+  <link rel="stylesheet" type="text/css" href="./public/index.css" />
+  <script src=".lib/ipfs-26.1.2.dist.js"></script>
+  <script src=".lib/jquery-3.1.1.min.js"></script>
+ 
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/web3/4.0.1-alpha.5/web3.min.js"
+      integrity="sha512-NfffVWpEqu1nq+658gzlJQilRBOvjs+PhEKSjT9gkQXRy9OfxI2TOXr33zS7MgGyTpBa5qtC6mKJkQGd9dN/rw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <style>
+      body {
+  height: 100vh;
+  background: rgb(0, 0, 0); /* For browsers that do not support gradients */
+  
+  font-family: "Inter Medium", sans-serif;
+}
+
+.status {
+  text-align: left;
+  margin: 0px;
+  font-family: "Inter Medium", sans-serif;
+}
+
+.maincontainer {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 30%;
+  width: 50%;
+}
+
+.buttonswrapperGrid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-template-rows: repeat(1, 1fr);
+  grid-gap: 1.5rem;
+  justify-items: center;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.button28 {
+  display: inline-block;
+  outline: 0;
+  border: none;
+  box-shadow: none;
+  cursor: pointer;
+  padding: 9px 30px;
+  font-size: 18px;
+  height: 60px;
+  width: 70%;
+  color: #fff;
+  text-align: center;
+  background: linear-gradient(90deg, #0d00ff, #5bc0ff 100%);
+  border-radius: 50px;
+  transition: all .2s ease-in-out;
+}
+.button28:hover {
+  box-shadow: 0 0 0 0.15rem #5cd5ea;
+  transform: scale(1.1);
+}
+
+.myinput {
+  background-color: rgb(253, 232, 255);
+  border-radius: 15px;
+  border: 1px solid #00ddff;
+  padding: 20px;
+  min-width: 43%;
+  height: 15px;
+}
+
+.inputcontainer {
+  display: flex;
+  justify-content: space-between; /* Space the input fields evenly */
+  align-items: center; /* Align the input fields vertically in the container */
+}
+
+.buttoncontainer {
+  display: flex;
+  justify-content: center; /* Center the button horizontally */
+  align-items: center; /* Center the button vertically */
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+.secondcontainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: left; /* Center the button horizontally */
+  align-items: center; /* Center the button vertically */
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+/* CSS */
+.button64 {
+  align-items: center;
+  background-image: linear-gradient(144deg, #0d00ff, #5bc0ff);
+  border: 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 14px 0 rgb(0 0 0 / 10%);
+  box-sizing: border-box;
+  color: #ffffff;
+  display: flex;
+  font-family: Phantomsans, sans-serif;
+  font-size: 20px;
+  justify-content: center;
+  line-height: 2em;
+  max-width: 100%;
+  min-width: 140px;
+  padding: 3px;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all .2s ease-in-out;
+
+}
+.button64:hover {
+  transform: scale(1.1);
+}
+
+
+
+.button49 {
+  display: inline-block;
+  outline: 0;
+  cursor: pointer;
+  border: none;
+  padding: 0 56px;
+  height: 45px;
+  line-height: 45px;
+  border-radius: 7px;
+  font-weight: 400;
+  font-size: 16px;
+  background: #0d00ff;
+  color: #ffffff;
+  box-shadow: 0 4px 14px 0 rgb(0 0 0 / 10%);
+  transition: all .2s ease-in-out;
+}
+
+.button49:hover {
+  background: rgba(72, 99, 255, 0.9);
+  box-shadow: 0 6px 20px rgb(93 93 93 / 23%);
+  transform: scale(1.1);
+}
+
+#infoBox,
+#errorBox,
+#loadingBox {
+  width: 80%;
+  margin: 10px auto;
+  color: white;
+  text-align: center;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+#infoBox > header,
+#errorBox > header,
+#loadingBox > header {
+  float: right;
+  margin-right: 5px;
+}
+
+#infoBox > header:hover,
+#errorBox > header:hover,
+#loadingBox > header:hover {
+  transition: all 0.2s;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#loadingBox {
+  background: #7cb3e9;
+}
+#infoBox {
+  background: #393;
+}
+#errorBox {
+  background: #f50;
+}
+
+
+    </style>
+  </head>
+  <body>
+    <header id="menu">
+      <a href="http://localhost:3001/public#" id="linkHome">Home</a>
+      <a href="http://localhost:3001/public#" id="linkSubmitDocument">Submit Document</a>
+      <a href="http://localhost:3001/public#" id="linkGetDocuments">View Documents</a>
+  </header>
+    <main>
+      <p id="status1" class="status" style="color: red">disconnected</p>
+      <p id="status2" style="color: white"></p>
+      <div class="maincontainer">
+        <!-- Connect Wallet -->
+        <div class="container">
+          <div class="buttonswrapper">
+            <div class="buttonswrapperGrid">
+              <button id="metamask" class="button28">MetaMask</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account Info Button -->
+        <div class="secondcontainer">
+          <button id="accountbutton" class="button49">
+            Account Information
+          </button>
+        </div>
+
+        <!-- Send Transaction -->
+        <form>
+          <div class="inputcontainer">
+            <input
+              id="addressinput"
+              class="myinput"
+              placeholder="Address 0x0..."
+            />
+            <input
+              id="amountinput"
+              class="myinput"
+              placeholder="Amount ether..."
+            />
+          </div>
+          <div class="buttoncontainer">
+            <button type="button" id="sendButton" class="button64">Send</button>
+          </div>
+        </form>
+
+        <!-- Mint -->
+        <a href="http://localhost:3001/public#" style="text-decoration: none; color: inherit;"><div class="secondcontainer">
+          <button id="mintbutton" class="button49">Next</button>
+          <p id="status3"></p>
+        </div></a>
+      
+    </main>
+
+
+    <script>
+      const web3 = new Web3(window.ethereum);
+
+// Function to check if MetaMask is available
+async function checkMetaMaskAvailability() {
+  if (window.ethereum) {
+    try {
+      // Request access to MetaMask accounts
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+      return true;
+    } catch (err) {
+      console.error("Failed to connect to MetaMask:", err);
+      return false;
+    }
+  } else {
+    console.error("MetaMask not found");
+    return false;
+  }
+}
+
+// Event listener for MetaMask button
+document.getElementById("metamask").addEventListener("click", async () => {
+  const metaMaskAvailable = await checkMetaMaskAvailability();
+  if (metaMaskAvailable) {
+    await ConnectWallet();
+  } else {
+    // MetaMask not available
+    console.error("MetaMask not found");
+    // Update status
+    document.getElementById("status1").innerText = "MetaMask not found";
+    document.getElementById("status1").style.color = "red";
+  }
+});
+
+//Function to connect to MetaMask
+async function ConnectWallet() {
+  try {
+    // Request access to MetaMask accounts
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+    // Update status
+    document.getElementById("status1").innerText = "Connected to MetaMask";
+    document.getElementById("status1").style.color = "green";
+  } catch (err) {
+    // Handle error
+    console.error("Failed to connect to MetaMask:", err);
+    // Update status
+    document.getElementById("status1").innerText =
+      "Failed to connect to MetaMask";
+    document.getElementById("status1").style.color = "red";
+  }
+}
+
+// Event Listener for Account Information
+document.getElementById("accountbutton").addEventListener("click", async () => {
+  const metaMaskAvailable = await checkMetaMaskAvailability();
+  if (metaMaskAvailable) {
+    await AccountInformation();
+  }
+});
+
+//Function to call the Account Information
+async function AccountInformation() {
+  const account = await web3.eth.getAccounts();
+  const from = account[0];
+  const balanceInWei = await web3.eth.getBalance(from);
+  const balanceInEth = web3.utils.fromWei(balanceInWei, "ether");
+  const gasPrice = await web3.eth.getGasPrice();
+  const gasPriceInEth = web3.utils.fromWei(gasPrice, "ether");
+
+  // Display the account information
+  document.getElementById("status2").innerText =
+    "Account Address: " +
+    from +
+    "\nBalance: " +
+    balanceInEth +
+    " ETH" +
+    "\nGas Price: " +
+    gasPriceInEth;
+  document.getElementById("status2").style.color = "white";
+}
+
+// Event Listener for Send Transaction
+document.getElementById("sendButton").addEventListener("click", async () => {
+  const metaMaskAvailable = await checkMetaMaskAvailability();
+  if (metaMaskAvailable) {
+    await SendFunction();
+  }
+});
+
+//Function to call the Send Function
+async function SendFunction() {
+  // Get input values
+  const to = document.getElementById("addressinput").value;
+  const amount = document.getElementById("amountinput").value;
+
+  // Check if both to and amount are provided
+  if (!to || !amount) {
+    console.error("To and amount are required");
+    return;
+  }
+
+  // Convert amount to wei (1 ether = 10^18 wei)
+  const amountWei = web3.utils.toWei(amount, "ether");
+
+  // Get the selected account from MetaMask
+  const accounts = await web3.eth.getAccounts();
+  const from = accounts[0];
+
+  // Create the transaction object
+  const transaction = {
+    from: from,
+    to: to,
+    value: amountWei,
+  };
+
+  // Send the transaction
+  try {
+    const result = await web3.eth.sendTransaction(transaction);
+    console.log("Transaction result:", result);
+    // Update status
+    document.getElementById("status2").innerText =
+      "Transaction sent successfully";
+    document.getElementById("status2").style.color = "green";
+  } catch (err) {
+    // Handle error
+    console.error("Failed to send transaction:", err);
+    // Update status
+    document.getElementById("status2").innerText = "Failed to send transaction";
+    document.getElementById("status2").style.color = "red";
+  }
+}
+
+
+
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "document-registry",
+  "version": "1.0.0",
+  "description": "In this exercise, we will deploy a simple Smart Contract using Remix IDE in Ganache CLI – command version of Ganache, a personal Ethereum blockchain perfect for our development purposes. Then we will create a simple JavaScript app, which will interact with the contract using Web3 API and MetaMask. The DApp is a simple registry for documents in which only the contract creator can add, but anyone can see them. ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "es-dev-server"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "es-dev-server": "^2.1.0",
+    "ethers": "^6.7.1",
+    "nvm": "^0.0.4"
+  }
+}

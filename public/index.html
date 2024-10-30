@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Doc Upload</title>
+    <link rel="icon" href="https://fav.farm/🔗" />
+
+    <script type="module">
+        import { ethers } from './node_modules/ethers/dist/ethers.min.js';
+        window.ethers = ethers;
+
+    </script>
+    
+    <link rel="stylesheet" type="text/css" href="./public/index.css" />
+    <script src="./public/lib/ipfs-26.1.2.dist.js"></script>
+    <script src="./public/lib/jquery-3.1.1.min.js"></script>
+    <script src="./public/index.js"></script>  
+    <script src="./public/main.js"></script>  
+      
+</head>
+
+<body>
+    <header id="menu">
+        <a href="#" id="linkHome">Home</a>
+        <a href="#" id="linkSubmitDocument">Submit Document</a>
+        <a href="#" id="linkGetDocuments">View Documents</a>
+    </header>
+
+    <main style="text-align: center;">
+        <section id="loadingBox">Loading ...</section>
+
+        <section id="infoBox">
+            <header>x</header>
+            <p>Info</p>
+        </section>
+
+        <section id="errorBox">
+            <header>x</header>
+            <p>Error</p>
+        </section>
+
+        <section id="viewHome">
+            <h1>Document Upload</h1>
+            This is the Document Upload dApp. This app runs on the Ethereum blockchain and uploads and displays every kind a file that you submit to the IPFS protocol.
+            <ul>
+                <li>This app keeps images of documents along with their publish date.</li>
+                <li>This app gives you access to all of the metadata and object stats of uploaded files.</li>
+                <li>View the file size, the file type, the files hash, add a description to your files, and view file images and the data contained within your files.</li>
+                <li>
+                    <b>Contract owner</b> can submit new documents to be stored on the blockchain.</li>
+                <li>
+                    <b>Users</b> can view the existence of certain documents in the registry.</li>
+            </ul>
+        </section>
+        
+        <section id="viewSubmitDocument">
+            <h1>Submit a Document</h1>
+            <p>Contract owners can upload new files to the IPFS protocol through the smart contract on the Ethereum blockchain.</p>
+            <input type="file" id="documentForUpload" />
+            <br />
+            <label for="description">Add a Description:</label>
+            <input type="text" id="description" placeholder="Enter a description for your file" />
+            <br />
+            <input type="button" id="documentUploadButton" value="Submit" />
+        </section>
+
+        <section id="viewGetDocuments">
+            <h1>View Documents</h1>
+            <p>Users can view documents uploaded to IPFS on the Ethereum network.</p>
+        </section>
+    </main>
+
+    <footer>Document Data- JS & Ethereum dApp</footer>
+    
+</body>
+
+</html>
