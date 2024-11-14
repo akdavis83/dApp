@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
 
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.7;
 
 contract DocumentRegistry {
     struct Document {
@@ -23,24 +23,35 @@ contract DocumentRegistry {
         contractOwner = msg.sender;
     }
 
-    // Function to add a new document with additional metadata
-    function add(
-        string memory hash,
-        uint256 fileSize,
-        string memory fileType,
-        string memory description
-    ) public onlyOwner returns (uint256 dateAdded) {
-        uint256 currentTime = block.timestamp;
-        Document memory doc = Document({
-            hash: hash,
-            dateAdded: currentTime,
-            fileSize: fileSize,
-            fileType: fileType,
-            description: description
-        });
-        documents.push(doc);
-        return currentTime;
+    // Add this function to get the contract owner
+    function getOwner() public view returns (address) {
+        return contractOwner;
     }
+
+
+    // Function to add a new document with additional metadata
+    event DocumentAdded(string hash, uint256 dateAdded, uint256 fileSize, string fileType, string description);
+
+function add(
+    string memory hash,
+    uint256 fileSize,
+    string memory fileType,
+    string memory description
+) public onlyOwner returns (uint256 dateAdded) {
+    uint256 currentTime = block.timestamp;
+    Document memory doc = Document({
+        hash: hash,
+        dateAdded: currentTime,
+        fileSize: fileSize,
+        fileType: fileType,
+        description: description
+    });
+    documents.push(doc);
+    
+    emit DocumentAdded(hash, currentTime, fileSize, fileType, description); // Emit the event
+    return currentTime;
+}
+
 
     // Get the total number of documents
     function getDocumentsCount() public view returns (uint256 documentCount) {

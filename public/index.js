@@ -6,7 +6,7 @@ $(document).ready(function () {
   }
   
   const provider = new ethers.BrowserProvider(window.ethereum);
-  const documentRegistryContractAddress = "0xe8866fdFd86C68533DaD85Ac4A56A934f66147f9";
+  const documentRegistryContractAddress = "0x0C0BA06f0940F2bcF645143700C877D9f32c2051";
 
   const documentRegistryContractABI =   [
 	{
@@ -47,6 +47,43 @@ $(document).ready(function () {
 		"inputs": [],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "hash",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "dateAdded",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "fileSize",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "fileType",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "description",
+				"type": "string"
+			}
+		],
+		"name": "DocumentAdded",
+		"type": "event"
 	},
 	{
 		"inputs": [
@@ -123,10 +160,23 @@ $(document).ready(function () {
 		],
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getOwner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
 	}
 ]
   
-  const IPFS = window.IpfsApi("localhost", "5001");
+  const IPFS = window.IpfsApi("localhost", "5004");
   const Buffer = IPFS.Buffer;
 
   // === User Interface Handlers Start ===
@@ -138,12 +188,22 @@ $(document).ready(function () {
 $("#linkSubmitDocument").click(function () {
     showView("viewSubmitDocument");
 });
+// $("#linkSubmitBlog").click(() => {
+//     showView("viewSubmitBlog");
+// });
 
 $("#linkGetDocuments").click(function () {
     $("#viewGetDocuments div").remove();
     showView("viewGetDocuments");
     viewGetDocuments();
 });
+
+// $("#linkGetBlogs").click(() => {
+//     $("#viewGetBlogs div").remove(); // Clear previous content
+//     showView("viewGetBlogs");
+//     viewGetBlogs();
+// });
+
 
 // Attach AJAX "loading" event listener
 $(document).on({
@@ -176,10 +236,62 @@ function showError(errorMsg) {
         $("#errorBox").hide();
     });
 }
-
+// $("#blogUploadButton").click(uploadBlog);
 $("#documentUploadButton").click(uploadDocument);
 
 // === User Interface Interactions End ===
+// async function uploadBlog() {
+//     const title = $("#blogTitle").val();
+//     const content = $("#blogContent").val();
+
+//     if (!title || !content) {
+//         showError("Please provide both title and content for the blog.");
+//         return;
+//     }
+
+//     const signer = await provider.getSigner();
+//     const contract = new ethers.BaseContract(documentRegistryContractAddress, documentRegistryContractABI, signer);
+
+//     try {
+//         // Upload blog content to IPFS (assuming IPFS is set up similarly)
+//         const result = await IPFS.files.add(Buffer.from(content));
+//         const ipfsHash = result[0].hash;
+
+//         // Call the smart contract to store the blog metadata
+//         const transaction = await contract.addBlog(ipfsHash, title);
+//         showInfo("Blog uploaded with transaction hash: " + transaction.hash);
+//     } catch (error) {
+//         showError("Blog upload failed: " + error.message);
+//     }
+// }
+
+// // Function to retrieve and display blogs
+// async function viewGetBlogs() {
+//     const contract = new ethers.BaseContract(documentRegistryContractAddress, documentRegistryContractABI, provider);
+
+//     try {
+//         const blogCount = await contract.getBlogsCount();
+
+//         let html = $("<div>");
+//         for (let index = 0; index < blogCount; index++) {
+//             const blogData = await contract.getBlog(index);
+//             const ipfsHash = blogData[0];
+//             const title = blogData[1];
+//             const dateAdded = new Date(blogData[2] * 1000).toLocaleDateString();
+
+//             const blogContent = await fetch(`https://ipfs.io/ipfs/${ipfsHash}`).then(res => res.text());
+
+//             let blogDiv = $("<div>");
+//             blogDiv.append(`<h3>${title}</h3>`);
+//             blogDiv.append(`<p>Published on: ${dateAdded}</p>`);
+//             blogDiv.append(`<p>${blogContent}</p>`);
+//             html.append(blogDiv);
+//         }
+//         $("#viewGetBlogs").append(html);
+//     } catch (error) {
+//         showError("Failed to load blogs: " + error.message);
+//     }
+// }
 
 async function uploadDocument() {
     if ($("#documentForUpload")[0].files.length === 0) {
@@ -266,7 +378,7 @@ async function viewGetDocuments() {
             console.log(`Document hash: ${ipfsHash.toString()}, contractPublishDate: ${contractPublishDate}, fileSize: ${fileSize}, fileType: ${fileType}, description: ${description}`);
 
             let div = $("<div>");
-            let url = "http://localhost:8080/ipfs/" + ipfsHash;
+            let url = `https://ipfs.io/ipfs/${ipfsHash}`;
             let displayDate = new Date(Number(contractPublishDate) * 1000).toLocaleDateString();
             div.append($(`<p>Document published on: ${displayDate}</p>`));
             div.append($(`<p>File Size: ${fileSize} bytes</p>`));
@@ -277,12 +389,12 @@ async function viewGetDocuments() {
             // Generate the IPFS URL
             const ipfsUrl = `https://ipfs.io/ipfs/${ipfsHash}`;
 
-            // Display based on file type
-            if (fileType === "pdf") {
-                // For PDF documents
-                div.append(`<iframe src="${ipfsUrl}" width="100%" height="500px"></iframe>`);
-            } else if (fileType === "text/plain") {
-                // For plain text, fetch and display content
+			if (fileType.startsWith("image/")) {
+				div.append($(`<img src="${ipfsUrl}" alt="Document Image" />`));
+			  } else if (fileType === "application/pdf") {
+				div.append(`<iframe src="${ipfsUrl}" width="100%" height="500px"></iframe>`);
+			  } else if (fileType === "text/plain") {
+				 // For plain text, fetch and display content
                 await fetch(ipfsUrl)
                     .then(response => response.text())
                     .then(text => {
@@ -291,12 +403,14 @@ async function viewGetDocuments() {
                     .catch(error => {
                         div.append(`<p>Error loading text document: ${error.message}</p>`);
                     });
-            } else {
-                div.append(`<p><a href="${ipfsUrl}" target="_blank">View Document</a></p>`);
-            }
+			  } else {
+				div.append(`<p><a href="${ipfsUrl}" target="_blank">View Document</a></p>`);
+			  }
+
+            
             html.append(div);
         }
-        html.append("</div>");
+       
         $("#viewGetDocuments").append(html);
     } else {
         $("#viewGetDocuments").append("<div>No documents found in the registry.</div>");

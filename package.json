@@ -2,16 +2,28 @@
   "name": "document-registry",
   "version": "1.0.0",
   "description": "In this exercise, we will deploy a simple Smart Contract using Remix IDE in Ganache CLI – command version of Ganache, a personal Ethereum blockchain perfect for our development purposes. Then we will create a simple JavaScript app, which will interact with the contract using Web3 API and MetaMask. The DApp is a simple registry for documents in which only the contract creator can add, but anyone can see them. ",
-  "main": "index.js",
+  "main": "truffle-config.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "truffle test",
+    "coverage": "truffle run coverage",
     "start": "es-dev-server"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@openzeppelin/contracts": "^5.1.0",
+    "chai": "^5.1.2",
     "es-dev-server": "^2.1.0",
-    "ethers": "^6.7.1",
+    "ethers": "^6.13.4",
     "nvm": "^0.0.4"
-  }
+  },
+  "devDependencies": {
+    "@openzeppelin/test-helpers": "^0.5.16",
+    "hardhat": "^2.22.15",
+    "solidity-coverage": "^0.7.22"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "keywords": []
 }

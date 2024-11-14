@@ -21,12 +21,26 @@
 </head>
 
 <body>
-    <header id="menu">
-        <a href="#" id="linkHome">Home</a>
-        <a href="#" id="linkSubmitDocument">Submit Document</a>
-        <a href="#" id="linkGetDocuments">View Documents</a>
-    </header>
+    
 
+    <header id="menu">
+        <span class="outer">
+            <a class="inner" href="#" id="linkHome">Home</a>
+        </span>
+        <span class="outer">
+            <a class="inner" href="#" id="linkSubmitDocument">Submit Document</a>
+        </span>
+        <!-- <span class="outer">
+            <a class="inner" href="#" id="linkSubmitBlog">Submit Blog</a> 
+        </span> -->
+        <span class="outer">
+            <a class="inner" href="#" id="linkGetDocuments">View Documents</a>
+        </span>
+        <!-- <span class="outer">
+            <a class="inner" href="#" id="linkGetBlogs">View Blogs</a> 
+        </span> -->
+    </header>
+    
     <main style="text-align: center;">
         <section id="loadingBox">Loading ...</section>
 
@@ -41,8 +55,8 @@
         </section>
 
         <section id="viewHome">
-            <h1>Document Upload</h1>
-            This is the Document Upload dApp. This app runs on the Ethereum blockchain and uploads and displays every kind a file that you submit to the IPFS protocol.
+            <h1>Blog Site</h1>
+            Welcome to my personal IPFS blog site. This app runs on the Ethereum blockchain and uploads and displays every kind a file that you submit to the IPFS protocol.
             <ul>
                 <li>This app keeps images of documents along with their publish date.</li>
                 <li>This app gives you access to all of the metadata and object stats of uploaded files.</li>
@@ -50,29 +64,82 @@
                 <li>
                     <b>Contract owner</b> can submit new documents to be stored on the blockchain.</li>
                 <li>
-                    <b>Users</b> can view the existence of certain documents in the registry.</li>
+                    <b>Users</b> can view the existence of any document.</li>
             </ul>
         </section>
         
         <section id="viewSubmitDocument">
-            <h1>Submit a Document</h1>
-            <p>Contract owners can upload new files to the IPFS protocol through the smart contract on the Ethereum blockchain.</p>
-            <input type="file" id="documentForUpload" />
+            <h1>Blog</h1>
+            <p>Contract owners can upload new blogs and files to the IPFS protocol through the smart contract on the Ethereum blockchain.</p>
+            <input style="background-color: rgb(0, 0, 0); color: white;" type="file" id="documentForUpload" />
             <br />
             <label for="description">Add a Description:</label>
-            <input type="text" id="description" placeholder="Enter a description for your file" />
+            <input type="text" id="description" placeholder="Enter a description for your file"/>
             <br />
-            <input type="button" id="documentUploadButton" value="Submit" />
+            <input style="background-color: darkgrey; color: white;" type="button" id="documentUploadButton" value="Submit" />
         </section>
 
         <section id="viewGetDocuments">
-            <h1>View Documents</h1>
+            <h1>View Docs</h1>
             <p>Users can view documents uploaded to IPFS on the Ethereum network.</p>
         </section>
-    </main>
-
-    <footer>Document Data- JS & Ethereum dApp</footer>
     
+        <!-- <section id="viewSubmitBlog"> 
+            <h1>Submit a Blog</h1>
+            <p>Contract owners can upload new blog entries.</p>
+            <label for="blogTitle">Title:</label>
+            <input type="text" id="blogTitle" placeholder="Enter the blog title" />
+            <br />
+            <label for="blogAuthor">Author:</label>
+            <input type="text" id="blogAuthor" placeholder="Enter the blog author" />
+            <br />
+            <label for="blogContent">Content:</label>
+            <textarea id="blogContent" placeholder="Enter the blog content" style="width: 800px; height: 30px;"></textarea>
+            <br />
+            <input style="background-color: darkgrey; color: white;" type="button" id="blogUploadButton" value="Submit Blog" />
+        </section>
+    
+        <section id="viewGetBlogs">
+            <h1>View Blogs</h1>
+            <p>Users can view blogs uploaded to the IPFS on the Ethereum network.</p>
+        </section> -->
+    </main>
+    
+
+    <footer>Blog Site- JS & Ethereum dApp</footer>
+
+    <div class="cursor"></div>
+    <svg>
+        <filter id="filth">
+            <feTurbulence x="0" y="0" baseFrequency="2" numOctaves="100" seed="44">
+                <animate attributeName="baseFrequency" dur="0.5s" values="0.1;0.005;0.05" repeatCount="indefinite">
+            </feTurbulence>
+            <feDisplacementMap in="SourceGraphic" scale="20">
+        </filter>
+    </svg>
+    <script>
+        let curs = document.querySelector(".cursor");
+
+document.addEventListener("mousemove", (e) => {
+    let x = e.pageX;
+    let y = e.pageY;
+    curs.style.left = x - 50 + "px";
+    curs.style.top = y - 50 + "px";
+});
+
+let menuEls = document.querySelectorAll(".menu a");
+menuEls.forEach((el) => {
+    el.addEventListener("mouseenter", () => {
+        setTimeout(() => {
+            curs.classList.add("cursor-fade");
+        }, 300);
+    });
+
+    el.addEventListener("mouseleave", () => {
+        curs.classList.remove("cursor-fade");
+    });
+});
+    </script>
 </body>
 
 </html>
