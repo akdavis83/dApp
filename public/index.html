@@ -30,15 +30,11 @@
         <span class="outer">
             <a class="inner" href="#" id="linkSubmitDocument">Submit Document</a>
         </span>
-        <!-- <span class="outer">
-            <a class="inner" href="#" id="linkSubmitBlog">Submit Blog</a> 
-        </span> -->
+       
         <span class="outer">
             <a class="inner" href="#" id="linkGetDocuments">View Documents</a>
         </span>
-        <!-- <span class="outer">
-            <a class="inner" href="#" id="linkGetBlogs">View Blogs</a> 
-        </span> -->
+      
     </header>
     
     <main style="text-align: center;">
@@ -55,7 +51,7 @@
         </section>
 
         <section id="viewHome">
-            <h1>Blog Site</h1>
+            <h1>Personal Blog and Diary Site</h1>
             Welcome to my personal IPFS blog site. This app runs on the Ethereum blockchain and uploads and displays every kind a file that you submit to the IPFS protocol.
             <ul>
                 <li>This app keeps images of documents along with their publish date.</li>
@@ -67,7 +63,7 @@
                     <b>Users</b> can view the existence of any document.</li>
             </ul>
         </section>
-        
+       
         <section id="viewSubmitDocument">
             <h1>Blog</h1>
             <p>Contract owners can upload new blogs and files to the IPFS protocol through the smart contract on the Ethereum blockchain.</p>
@@ -78,31 +74,13 @@
             <br />
             <input style="background-color: darkgrey; color: white;" type="button" id="documentUploadButton" value="Submit" />
         </section>
-
+ 
         <section id="viewGetDocuments">
             <h1>View Docs</h1>
             <p>Users can view documents uploaded to IPFS on the Ethereum network.</p>
         </section>
     
-        <!-- <section id="viewSubmitBlog"> 
-            <h1>Submit a Blog</h1>
-            <p>Contract owners can upload new blog entries.</p>
-            <label for="blogTitle">Title:</label>
-            <input type="text" id="blogTitle" placeholder="Enter the blog title" />
-            <br />
-            <label for="blogAuthor">Author:</label>
-            <input type="text" id="blogAuthor" placeholder="Enter the blog author" />
-            <br />
-            <label for="blogContent">Content:</label>
-            <textarea id="blogContent" placeholder="Enter the blog content" style="width: 800px; height: 30px;"></textarea>
-            <br />
-            <input style="background-color: darkgrey; color: white;" type="button" id="blogUploadButton" value="Submit Blog" />
-        </section>
-    
-        <section id="viewGetBlogs">
-            <h1>View Blogs</h1>
-            <p>Users can view blogs uploaded to the IPFS on the Ethereum network.</p>
-        </section> -->
+        
     </main>
     
 
@@ -117,6 +95,10 @@
             <feDisplacementMap in="SourceGraphic" scale="20">
         </filter>
     </svg>
+    <script>
+
+        
+    </script>
     <script>
         let curs = document.querySelector(".cursor");
 
@@ -139,6 +121,79 @@ menuEls.forEach((el) => {
         curs.classList.remove("cursor-fade");
     });
 });
+    </script>
+     <script>
+        // Cryptographic hash for SHA256 and AES key decryption
+        async function generateSHA256Hash(input) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(input);
+            const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+            return hashBuffer;
+        }
+    
+        async function deriveAESKeyFromHash(hashBuffer) {
+            return await crypto.subtle.importKey(
+                "raw",
+                hashBuffer,
+                { name: "AES-GCM" },
+                false,
+                ["encrypt", "decrypt"]
+            );
+        }
+    
+        async function decryptWithAESKey(aesKey, encryptedData) {
+            const { iv, data } = JSON.parse(encryptedData);
+            const ivArray = new Uint8Array(iv);
+            const dataArray = new Uint8Array(data);
+    
+            const decryptedData = await crypto.subtle.decrypt(
+                {
+                    name: "AES-GCM",
+                    iv: ivArray,
+                },
+                aesKey,
+                dataArray
+            );
+    
+            const decoder = new TextDecoder();
+            return decoder.decode(decryptedData);
+        }
+    
+        async function validateAccess() {
+            // Get userHash from URL fragment and sessionStorage
+            const urlHash = window.location.hash.substring(1);
+            const sessionUserHash = sessionStorage.getItem("userHash");
+    
+            if (urlHash !== sessionUserHash) {
+                alert("Unauthorized access. Redirecting to login.");
+                window.location.href = "../index.html.html";
+                return;
+            }
+    
+            // Retrieve encrypted token from sessionStorage
+            const encryptedToken = sessionStorage.getItem("encryptedToken");
+            if (!encryptedToken) {
+                alert("Session expired. Redirecting to login.");
+                window.location.href = "../index.html.html";
+                return;
+            }
+    
+            // Derive AES key using the sessionUserHash
+            const hashBuffer = await generateSHA256Hash(sessionUserHash);
+            const aesKey = await deriveAESKeyFromHash(hashBuffer);
+    
+            // Decrypt and validate the session token
+            const decryptedToken = await decryptWithAESKey(aesKey, encryptedToken);
+            if (decryptedToken === "adminToken") {
+                console.log("Access granted. Welcome to the admin area.");
+            } else {
+                alert("Unauthorized access. Redirecting to login.");
+                window.location.href = "../index.html";
+            }
+        }
+    
+        // Run validation on page load
+        validateAccess();
     </script>
 </body>
 

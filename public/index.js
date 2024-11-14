@@ -176,7 +176,7 @@ $(document).ready(function () {
 	}
 ]
   
-  const IPFS = window.IpfsApi("localhost", "5004");
+  const IPFS = window.IpfsApi("localhost", "5002");
   const Buffer = IPFS.Buffer;
 
   // === User Interface Handlers Start ===
@@ -188,9 +188,6 @@ $(document).ready(function () {
 $("#linkSubmitDocument").click(function () {
     showView("viewSubmitDocument");
 });
-// $("#linkSubmitBlog").click(() => {
-//     showView("viewSubmitBlog");
-// });
 
 $("#linkGetDocuments").click(function () {
     $("#viewGetDocuments div").remove();
@@ -198,11 +195,7 @@ $("#linkGetDocuments").click(function () {
     viewGetDocuments();
 });
 
-// $("#linkGetBlogs").click(() => {
-//     $("#viewGetBlogs div").remove(); // Clear previous content
-//     showView("viewGetBlogs");
-//     viewGetBlogs();
-// });
+
 
 
 // Attach AJAX "loading" event listener
@@ -236,62 +229,8 @@ function showError(errorMsg) {
         $("#errorBox").hide();
     });
 }
-// $("#blogUploadButton").click(uploadBlog);
+
 $("#documentUploadButton").click(uploadDocument);
-
-// === User Interface Interactions End ===
-// async function uploadBlog() {
-//     const title = $("#blogTitle").val();
-//     const content = $("#blogContent").val();
-
-//     if (!title || !content) {
-//         showError("Please provide both title and content for the blog.");
-//         return;
-//     }
-
-//     const signer = await provider.getSigner();
-//     const contract = new ethers.BaseContract(documentRegistryContractAddress, documentRegistryContractABI, signer);
-
-//     try {
-//         // Upload blog content to IPFS (assuming IPFS is set up similarly)
-//         const result = await IPFS.files.add(Buffer.from(content));
-//         const ipfsHash = result[0].hash;
-
-//         // Call the smart contract to store the blog metadata
-//         const transaction = await contract.addBlog(ipfsHash, title);
-//         showInfo("Blog uploaded with transaction hash: " + transaction.hash);
-//     } catch (error) {
-//         showError("Blog upload failed: " + error.message);
-//     }
-// }
-
-// // Function to retrieve and display blogs
-// async function viewGetBlogs() {
-//     const contract = new ethers.BaseContract(documentRegistryContractAddress, documentRegistryContractABI, provider);
-
-//     try {
-//         const blogCount = await contract.getBlogsCount();
-
-//         let html = $("<div>");
-//         for (let index = 0; index < blogCount; index++) {
-//             const blogData = await contract.getBlog(index);
-//             const ipfsHash = blogData[0];
-//             const title = blogData[1];
-//             const dateAdded = new Date(blogData[2] * 1000).toLocaleDateString();
-
-//             const blogContent = await fetch(`https://ipfs.io/ipfs/${ipfsHash}`).then(res => res.text());
-
-//             let blogDiv = $("<div>");
-//             blogDiv.append(`<h3>${title}</h3>`);
-//             blogDiv.append(`<p>Published on: ${dateAdded}</p>`);
-//             blogDiv.append(`<p>${blogContent}</p>`);
-//             html.append(blogDiv);
-//         }
-//         $("#viewGetBlogs").append(html);
-//     } catch (error) {
-//         showError("Failed to load blogs: " + error.message);
-//     }
-// }
 
 async function uploadDocument() {
     if ($("#documentForUpload")[0].files.length === 0) {
@@ -390,24 +329,13 @@ async function viewGetDocuments() {
             const ipfsUrl = `https://ipfs.io/ipfs/${ipfsHash}`;
 
 			if (fileType.startsWith("image/")) {
-				div.append($(`<img src="${ipfsUrl}" alt="Document Image" />`));
-			  } else if (fileType === "application/pdf") {
+				div.append(`<img src="${ipfsUrl}" alt="Document Image" />`);
+			} else if (fileType === "application/pdf") {
 				div.append(`<iframe src="${ipfsUrl}" width="100%" height="500px"></iframe>`);
-			  } else if (fileType === "text/plain") {
-				 // For plain text, fetch and display content
-                await fetch(ipfsUrl)
-                    .then(response => response.text())
-                    .then(text => {
-                        div.append(`<pre>${text}</pre>`);
-                    })
-                    .catch(error => {
-                        div.append(`<p>Error loading text document: ${error.message}</p>`);
-                    });
-			  } else {
-				div.append(`<p><a href="${ipfsUrl}" target="_blank">View Document</a></p>`);
-			  }
-
-            
+			} else {
+				div.append(`<a href="${ipfsUrl}" target="_blank">View Document</a>`);
+			}
+			
             html.append(div);
         }
        

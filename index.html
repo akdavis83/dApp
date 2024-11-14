@@ -200,9 +200,14 @@ canvas {border:1px solid #181818;display:block;box-shadow:0 0 10px #111}
   </head>
   <body>
     <header id="menu">
-      <a href="http://localhost:3002/public#" id="linkHome">Home</a>
-      <a href="http://localhost:3002/public#" id="linkSubmitDocument">Submit Document</a>
-      <a href="http://localhost:3001/public#" id="linkGetDocuments">View Documents</a>
+      <div id="inputs">
+        <form id='login' action='' method='post' accept-charset='UTF-8' style="margin-left:6px;">
+      
+  <input type="text" id="username" placeholder="Username" required>
+  <input type="password" id="password" placeholder="Password" required>
+  <button style="background-color: #378DE5; color: #fff; border: none; border-radius: 5px; font-size: 26px; font-family: 'Roboto', sans-serif; font-weight: 300; cursor: pointer; z-index: 100;" onclick="authenticateUser()">Login</button>
+      
+    </form>
   </header>
     <main>
       <p id="status1" class="status" style="color: red">disconnected</p>
@@ -244,12 +249,29 @@ canvas {border:1px solid #181818;display:block;box-shadow:0 0 10px #111}
           </div>
         </form>
 
-        <!-- Mint -->
-        <a href="http://localhost:3002/public#" style="text-decoration: none; color: inherit;"><div class="secondcontainer">
+       
+        <!-- <a href="http://localhost:3002/public#" style="text-decoration: none; color: inherit;"><div class="secondcontainer">
           <button id="mintbutton" class="button49">Next</button>
           <p id="status3"></p>
-        </div></a>
+        </div></a> -->
       
+
+        
+    <div>
+    	<div>
+        	<div>
+          		<h3>Login</h3>
+          		<h5>Sign in to continue to your profile page.</h5>
+        	</div>
+        
+        <div id="inputs">
+        	<form id='login' action='' method='post' accept-charset='UTF-8' style="margin-left:6px;">
+				
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button style="background-color: #378DE5; color: #fff; border: none; border-radius: 5px; font-size: 26px; font-family: 'Roboto', sans-serif; font-weight: 300; cursor: pointer; z-index: 100;" onclick="authenticateUser()">Login</button>
+				
+			</form>
     </main>
 
     <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
@@ -576,5 +598,112 @@ function intersection(a1,a2,b1,b2, p, p2){
   return false;
 }
     </script>
+    <script>
+      // Cryptographic SHA256 hash and AES encryption using the SHA-256 hash of a password
+      async function generateSHA256Hash(input) {
+          try {
+              const encoder = new TextEncoder();
+              const data = encoder.encode(input);
+              return await crypto.subtle.digest("SHA-256", data);
+          } catch (error) {
+              console.error("Error generating SHA-256 hash:", error);
+          }
+      }
+  
+      async function deriveAESKeyFromHash(hashBuffer) {
+          try {
+              return await crypto.subtle.importKey(
+                  "raw",
+                  hashBuffer,
+                  { name: "AES-GCM" },
+                  false,
+                  ["encrypt", "decrypt"]
+              );
+          } catch (error) {
+              console.error("Error deriving AES key:", error);
+          }
+      }
+  
+      async function encryptWithAESKey(aesKey, data) {
+          try {
+              const encoder = new TextEncoder();
+              const iv = crypto.getRandomValues(new Uint8Array(12));
+              const encryptedData = await crypto.subtle.encrypt(
+                  {
+                      name: "AES-GCM",
+                      iv: iv,
+                  },
+                  aesKey,
+                  encoder.encode(data)
+              );
+              const ivArray = Array.from(iv);
+              const encryptedArray = Array.from(new Uint8Array(encryptedData));
+              return JSON.stringify({ iv: ivArray, data: encryptedArray });
+          } catch (error) {
+              console.error("Error encrypting data:", error);
+          }
+      }
+  
+      async function authenticateUser() {
+          try {
+              // Capture user input
+              const username = document.getElementById("username").value;
+              const password = document.getElementById("password").value;
+  
+              // Validate input
+              if (!username || !password) {
+                  alert("Please enter both username and password.");
+                  return;
+              }
+  
+              console.log("Username and password captured.");
+  
+              // Generate SHA-256 hash of username + password
+              const hashBuffer = await generateSHA256Hash(username + password);
+              if (!hashBuffer) {
+                  alert("Hash generation failed.");
+                  return;
+              }
+              
+              const userHash = Array.from(new Uint8Array(hashBuffer))
+                                    .map(b => b.toString(16).padStart(2, '0'))
+                                    .join('');
+  
+              console.log("Generated user hash:", userHash);
+  
+              // Derive AES key from hash
+              const aesKey = await deriveAESKeyFromHash(hashBuffer);
+              if (!aesKey) {
+                  alert("AES key derivation failed.");
+                  return;
+              }
+  
+              console.log("AES key derived successfully.");
+  
+              // Encrypt session token
+              const encryptedToken = await encryptWithAESKey(aesKey, "adminToken");
+              if (!encryptedToken) {
+                  alert("Token encryption failed.");
+                  return;
+              }
+  
+              console.log("Encrypted token generated.");
+  
+              // Store token and hash in session storage
+              sessionStorage.setItem("encryptedToken", encryptedToken);
+              sessionStorage.setItem("userHash", userHash);
+  
+              console.log("User authenticated, redirecting to admin.");
+  
+              
+  
+              // Redirect to the admin page
+              window.location.href = `http://localhost:3002/public#${userHash}`;
+          } catch (error) {
+              console.error("Error during authentication:", error);
+              alert("An error occurred. Check console for details.");
+          }
+      }
+  </script>
   </body>
 </html>
