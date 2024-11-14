@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.7;
 
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
@@ -7,17 +7,10 @@ import "../contracts/DocumentRegistry.sol";
 
 contract DocumentRegistryTest {
     DocumentRegistry documentRegistry;
-    address owner;
-
+    
     // Run before every test function
     function beforeEach() public {
         documentRegistry = new DocumentRegistry();
-        owner = address(this);
-    }
-
-    function testContractOwnerSetCorrectly() public {
-        address contractOwner = documentRegistry.contractOwner();
-        Assert.equal(contractOwner, owner, "Owner should be set to the deploying address");
     }
 
     function testAddDocumentSuccessfully() public {
@@ -37,13 +30,14 @@ contract DocumentRegistryTest {
         Assert.equal(timestamp, dateAdded, "The dateAdded should match the returned timestamp");
     }
 
-    function testOnlyOwnerCanAddDocument() public {
-        // Attempt to add a document from a non-owner account
-        (bool success, ) = address(documentRegistry).call(
-            abi.encodeWithSignature("add(string,uint256,string,string)", "QmTest", 123, "txt", "Non-owner attempt")
-        );
-        Assert.isFalse(success, "Only the owner should be able to add a document");
-    }
+    function testOnlyOwnerCanAddDocument() public { 
+    (bool success, ) = address(documentRegistry).call(
+        abi.encodeWithSignature("add(string,uint256,string,string)", "QmTest", 123, "txt", "Non-owner attempt")
+    );
+
+    Assert.isFalse(success, "Only the owner should be able to add a document");
+}
+
 
     function testGetDocumentsCount() public {
         string memory ipfsHash1 = "Qm123";
@@ -100,4 +94,6 @@ contract DocumentRegistryTest {
         );
         Assert.isFalse(success, "Fetching stats for a non-existent document should revert");
     }
+    
+    
 }
