@@ -166,7 +166,7 @@ menuEls.forEach((el) => {
     
             if (urlHash !== sessionUserHash) {
                 alert("Unauthorized access. Redirecting to login.");
-                window.location.href = "../index.html.html";
+                window.location.href = "../index.html";
                 return;
             }
     
@@ -174,7 +174,7 @@ menuEls.forEach((el) => {
             const encryptedToken = sessionStorage.getItem("encryptedToken");
             if (!encryptedToken) {
                 alert("Session expired. Redirecting to login.");
-                window.location.href = "../index.html.html";
+                window.location.href = "../index.html";
                 return;
             }
     
