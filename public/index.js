@@ -176,7 +176,7 @@ $(document).ready(function () {
 	}
 ]
   
-  const IPFS = window.IpfsApi("localhost", "5002");
+  const IPFS = window.IpfsApi("localhost", "5004");
   const Buffer = IPFS.Buffer;
 
   // === User Interface Handlers Start ===

@@ -5,7 +5,76 @@
     <meta charset="utf-8" />
     <title>Doc Upload</title>
     <link rel="icon" href="https://fav.farm/🔗" />
+<style>
+    .toc-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      text-align: center;
+    }
+    .toc-item {
+      padding: 0.5rem 1rem;
+      background-color: #007BFF;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 1.2rem;
+      text-align: center;
+      width: 50px;
+      text-align: center;
+    }
+    .toc-item:hover {
+      background-color: #0056b3;
+    }
+    #highlighter {
+	min-height: 100vh;
+	width: 100vw;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	align-items: center;
+}
+#highlighter > div:nth-of-type(1) {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+#highlighter > div:nth-of-type(1) > h1 {
+	font-size: 5rem;
+	margin-bottom: 10px;
+}
+#highlighter > div:nth-of-type(1) > p {
+	max-width: 80%;
+}
+#highlighter > div:nth-of-type(2) {
+	padding: 10px;
+	margin: 0 10px;
+}
+#highlighter > div:nth-of-type(3) > h6 {
+	font-size: 2rem;
+}
+#highlighter > div:nth-of-type(3) > ul {
+	list-style-type: none;
+}
 
+#highlighter > div:nth-of-type(3) b {
+	font-size: 1.2rem;
+}
+.highlight {
+	background-color: var(--theme);
+}
+.highlightt {
+            background-color: yellow;
+            font-weight: bold;
+        }
+        #getDocuments{
+            margin-left: 2500px;
+            margin-right: 2500px;
+            width: 50%;
+            overflow: hidden;
+        }
+</style>
     <script type="module">
         import { ethers } from './node_modules/ethers/dist/ethers.min.js';
         window.ethers = ethers;
@@ -34,7 +103,7 @@
         <span class="outer">
             <a class="inner" href="#" id="linkGetDocuments">View Documents</a>
         </span>
-      
+       
     </header>
     
     <main style="text-align: center;">
@@ -51,6 +120,7 @@
         </section>
 
         <section id="viewHome">
+            
             <h1>Personal Blog and Diary Site</h1>
             Welcome to my personal IPFS blog site. This app runs on the Ethereum blockchain and uploads and displays every kind a file that you submit to the IPFS protocol.
             <ul>
@@ -76,6 +146,8 @@
         </section>
  
         <section id="viewGetDocuments">
+             <input type="text" id="searchBox" placeholder="Enter a word to search">
+        <button onclick="searchAndHighlight()">Search</button>
             <h1>View Docs</h1>
             <p>Users can view documents uploaded to IPFS on the Ethereum network.</p>
         </section>
@@ -195,6 +267,38 @@ menuEls.forEach((el) => {
         // Run validation on page load
         validateAccess();
     </script>
+    <script>
+        function searchAndHighlight() {
+            // Get the search term from input
+            const searchTerm = document.getElementById("searchBox").value.trim();
+            if (!searchTerm) return; // Exit if search term is empty
+            
+            // Get the dictionary content div
+            const dictionaryDiv = document.getElementById("dictionary");
+            
+            // Clear previous highlights
+            dictionaryDiv.innerHTML = dictionaryDiv.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/g, "$1");
+
+            // Search for all occurrences of the word (case-insensitive)
+            const regex = new RegExp(`\\b(${searchTerm})\\b`, "gi");
+            let matchCount = 0;
+            dictionaryDiv.innerHTML = dictionaryDiv.innerHTML.replace(regex, (match) => {
+                matchCount++;
+                return `<span class="highlightt">${match}</span>`;
+            });
+
+            if (matchCount > 0) {
+                // Scroll to the first occurrence only
+                const firstHighlight = document.querySelector(".highlightt");
+                if (firstHighlight) {
+                    firstHighlight.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
+            } else {
+                alert("Word not found!");
+            }
+        }
+    </script>
+
 </body>
 
 </html>
