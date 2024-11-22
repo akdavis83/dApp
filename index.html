@@ -198,7 +198,9 @@ canvas {border:1px solid #181818;display:block;box-shadow:0 0 10px #111}
 
     </style>
   </head>
-  <body>
+  <body>      
+    <img src="Blockchain Cubes Linked Together Forming A Blockch.png" alt="BC" style="width: 100px; height: 100px; position: absolute; top: 5px; left: 5px;">
+
     <header id="menu">
       <div id="inputs">
         <form id='login' action='' method='post' accept-charset='UTF-8' style="margin-left:6px;">
@@ -698,7 +700,7 @@ function intersection(a1,a2,b1,b2, p, p2){
               
   
               // Redirect to the admin page
-              window.location.href = `http://localhost:3002/public#${userHash}`;
+              window.location.href = `http://localhost:3001/public#${userHash}`;
           } catch (error) {
               console.error("Error during authentication:", error);
               alert("An error occurred. Check console for details.");
